@@ -98,15 +98,12 @@
                 }
                 var Qiniu_upload = function(files, length, i) {
                     if (length > i) {
-                        var promise = $.ajax({
-                           url:'http://7xkjuu.com2.z0.glb.qiniucdn.com/uptoken',
-                           type:'GET',
-                        }).then(function(data){
-                           var token = data.uptoken;
-                           uploadFile(files, token, i);
-                        },function(err){
-                          console.log(err);
-                        })
+                        settings.upload.upload().$promise.then((response) => {
+                          settings.uptoken = response.data.uptoken;
+                          settings.domain = response.data.domain;
+                          uploadFile(files, settings.uptoken, i);
+                        });
+
                     } else {
                         $('[name="file"]').val('');
                         loading(false);
@@ -117,7 +114,7 @@
                         formdata.append('file', files[fileNo]);
                         formdata.append('key', new Date().getTime() + files[fileNo].name);
                         formdata.append('token', token);
-                      var qiniudomain = 'http://7xkjuu.com2.z0.glb.qiniucdn.com/';
+                      var qiniudomain = settings.domain + '/';
                         $.ajax({
                             type: 'POST',
                             url: 'http://upload.qiniu.com',
@@ -149,7 +146,6 @@
                     return false;
                 }
                 var fileInput  = dialog.find("[name=\"" + classPrefix + "image-file\"]");
-                // fileInput.off('change').on('change', function() {
                 fileInput.on('change', function() {
                     var fileName = fileInput.val();
                     var isImage = new RegExp('(\\.(' + settings.imageFormats.join('|') + '))$'); // /(\.(webp|jpg|jpeg|gif|bmp|png))$/
