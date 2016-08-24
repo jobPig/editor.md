@@ -70,9 +70,9 @@
                           e.stopPropagation();
                           e.preventDefault();
                           settings.articleService.selectArticle().$promise.then((response) => {
-                            var articleUrl = "http://developer.opdev.qiniu.io/articles/" + response.id;
+                            var articleid = response.id;
                             var articleTitle = response.title;
-                            // console.log(response, articleUrl, articleTitle);
+                            var articleUrl = settings.articleService.getUrl(response);
                             this.show();
                             this.find("[data-url]").val(articleUrl);
                             this.find("[data-title]").val(articleTitle);
